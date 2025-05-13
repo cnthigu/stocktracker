@@ -1,0 +1,303 @@
+﻿@model StockTracker.Models.Acao
+@{
+    ViewData["Title"] = "Resultado da Busca";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient-start: #ffffff;
+            --bg-gradient-end: #f5f8ff;
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #ec4899;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --card-bg: #ffffff;
+            --card-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1), 0 8px 10px -6px rgba(99, 102, 241, 0.05);
+            --border-radius: 16px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-top: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: white;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all var(--transition-speed);
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+
+        .result-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stock-symbol {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stock-name {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .stock-exchange {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stock-price-container {
+            text-align: right;
+        }
+
+        .stock-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stock-currency {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .details-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            transition: transform var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.6s ease-out forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .detail-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }        
+
+            .header {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
+            }
+
+            .stock-header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .stock-price-container {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-chart-line logo-icon"></i>
+                <h1 class="logo-text">StockTracker</h1>
+            </div>
+            <a href="@Url.Action("Index", "Acao")" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Nova Busca</span>
+            </a>
+        </header>
+
+        <main>
+            <section class="result-card">
+                <div class="stock-header">
+                    <div class="stock-info">
+                        <h2 class="stock-symbol">@Model.Simbolo</h2>
+                        <h3 class="stock-name">@Model.Nome</h3>
+                        <div class="stock-exchange">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>@Model.Bolsa</span>
+                        </div>
+                    </div>
+                    <div class="stock-price-container">
+                        <div class="stock-price">@Model.Preco</div>
+                        <div class="stock-currency">@Model.Moeda</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="details-section">
+                <div class="detail-card">
+                    <div class="detail-title">
+                        <i class="fas fa-tag" style="color: var(--primary-color)"></i>
+                        <span>Símbolo</span>
+                    </div>
+                    <div class="detail-value">@Model.Simbolo</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-title">
+                        <i class="fas fa-building" style="color: var(--secondary-color)"></i>
+                        <span>Nome</span>
+                    </div>
+                    <div class="detail-value">@Model.Nome</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-title">
+                        <i class="fas fa-exchange-alt" style="color: var(--primary-color)"></i>
+                        <span>Bolsa</span>
+                    </div>
+                    <div class="detail-value">@Model.Bolsa</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-title">
+                        <i class="fas fa-coins" style="color: var(--secondary-color)"></i>
+                        <span>Moeda</span>
+                    </div>
+                    <div class="detail-value">@Model.Moeda</div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
